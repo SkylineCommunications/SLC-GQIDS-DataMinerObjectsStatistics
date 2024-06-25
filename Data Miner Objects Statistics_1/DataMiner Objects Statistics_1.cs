@@ -1,4 +1,4 @@
-namespace Data_Miner_Objects_Statistics_1
+namespace DataMiner_Objects_Statistics_1
 {
 	using System.Collections.Generic;
 

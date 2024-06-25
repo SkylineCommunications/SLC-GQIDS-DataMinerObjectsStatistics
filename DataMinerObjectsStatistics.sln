@@ -39,7 +39,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Code Analysis", "Code Analy
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data Miner Objects Statistics", "Data Miner Objects Statistics", "{DCF9ADB4-A771-4334-AF12-1655F40F596B}"
 	ProjectSection(SolutionItems) = preProject
-		Data Miner Objects Statistics.xml = Data Miner Objects Statistics.xml
+		DataMiner Objects Statistics.xml = DataMiner Objects Statistics.xml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{12EC503F-3387-4079-893F-BA29957DCF06}"
