@@ -9,3 +9,5 @@ Currently available sources are:
 * Number of DOM instances per module
 * Total number of resources
 * Number of resources per pool
+
+  Feel free to create PRs for more statistics about DataMiner objects.
