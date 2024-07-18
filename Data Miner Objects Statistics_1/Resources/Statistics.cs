@@ -1,7 +1,6 @@
 ﻿namespace DataMinerObjectsStatistics.Resources
 {
 	using System.Collections.Generic;
-	using System.Threading;
 
 	using Skyline.DataMiner.Analytics.GenericInterface;
 	using Skyline.DataMiner.Net.Messages;
