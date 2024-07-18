@@ -79,6 +79,9 @@
 				Thread.Sleep(1000);
 			}
 
+			if (timeout <= 0)
+				return new GQIPage(new GQIRow[0]);
+
 			var pools = PoolProvider.GetResourcePools(resourceHelper);
 			foreach (var pool in pools.Values)
 				_counts.Add(pool.Name, pool.Resources.Count);
