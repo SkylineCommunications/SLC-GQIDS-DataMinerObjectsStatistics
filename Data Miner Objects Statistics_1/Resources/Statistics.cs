@@ -1,6 +1,7 @@
 ﻿namespace DataMinerObjectsStatistics.Resources
 {
 	using System.Collections.Generic;
+	using System.Threading;
 
 	using Skyline.DataMiner.Analytics.GenericInterface;
 	using Skyline.DataMiner.Net.Messages;
@@ -8,15 +9,13 @@
 	[GQIMetaData(Name = "Total number of resources")]
 	public class ResourcesCount : IGQIDataSource, IGQIOnInit
 	{
+		private ResourceManagerHelper resourceHelper;
+
 		private int _total = 0;
 
 		public OnInitOutputArgs OnInit(OnInitInputArgs args)
 		{
-			var resourceHelper = new ResourceManagerHelper(args.DMS.SendMessage);
-
-			var pools = PoolProvider.GetResourcePools(resourceHelper);
-			foreach (var pool in pools.Values)
-				_total += pool.Resources.Count;
+			resourceHelper = new ResourceManagerHelper(args.DMS.SendMessage);
 
 			return default;
 		}
@@ -31,6 +30,10 @@
 
 		public GQIPage GetNextPage(GetNextPageInputArgs args)
 		{
+			var pools = PoolProvider.GetResourcePools(resourceHelper);
+			foreach (var pool in pools.Values)
+				_total += pool.Resources.Count;
+
 			var rows = new List<GQIRow>()
 			{
 				new GQIRow(new GQICell[]
@@ -49,15 +52,12 @@
 	[GQIMetaData(Name = "Number of resources per pool")]
 	public class ResourcesPerPoolCount : IGQIDataSource, IGQIOnInit
 	{
+		private ResourceManagerHelper resourceHelper;
 		private Dictionary<string, int> _counts = new Dictionary<string, int>();
 
 		public OnInitOutputArgs OnInit(OnInitInputArgs args)
 		{
-			var resourceHelper = new ResourceManagerHelper(args.DMS.SendMessage);
-
-			var pools = PoolProvider.GetResourcePools(resourceHelper);
-			foreach (var pool in pools.Values)
-				_counts.Add(pool.Name, pool.Resources.Count);
+			resourceHelper = new ResourceManagerHelper(args.DMS.SendMessage);
 
 			return default;
 		}
@@ -73,6 +73,16 @@
 
 		public GQIPage GetNextPage(GetNextPageInputArgs args)
 		{
+			int timeout = 120;
+			while (PoolProvider.IsRunning && timeout-- > 0)
+			{
+				Thread.Sleep(1000);
+			}
+
+			var pools = PoolProvider.GetResourcePools(resourceHelper);
+			foreach (var pool in pools.Values)
+				_counts.Add(pool.Name, pool.Resources.Count);
+
 			var rows = new List<GQIRow>();
 
 			foreach (var count in _counts)
