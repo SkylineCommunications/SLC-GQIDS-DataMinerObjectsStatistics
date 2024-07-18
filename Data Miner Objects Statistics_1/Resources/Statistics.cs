@@ -88,7 +88,6 @@
 				_counts.Add(pool.Name, pool.Resources.Count);
 
 			var rows = new List<GQIRow>();
-
 			foreach (var count in _counts)
 			{
 				rows.Add(new GQIRow(
