@@ -3,22 +3,32 @@
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using System.Threading.Tasks;
 
 	using Skyline.DataMiner.Net.Messages;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
 
 	public static class PoolProvider
 	{
-		private static Dictionary<Guid, Pool> pools;
+		private static readonly object _lock = new object();
+		private static Task<Dictionary<Guid, Pool>> _poolsTask;
 
-		public static bool IsRunning { get; set; } = true;
-
-		public static Dictionary<Guid, Pool> GetResourcePools(ResourceManagerHelper resourceHelper)
+		public static Task<Dictionary<Guid, Pool>> GetResourcePoolsAsync(ResourceManagerHelper resourceHelper)
 		{
-			if (pools != null)
-				return pools;
+			lock (_lock)
+			{
+				if (_poolsTask is null)
+				{
+					_poolsTask = Task.Run(() => GetResourcePools(resourceHelper));
+				}
+			}
 
-			pools = new Dictionary<Guid, Pool>();
+			return _poolsTask;
+		}
+
+		private static Dictionary<Guid, Pool> GetResourcePools(ResourceManagerHelper resourceHelper)
+		{
+			var pools = new Dictionary<Guid, Pool>();
 
 			var allResourcesFilter = new TRUEFilterElement<Resource>();
 			var allResources = new HashSet<Resource>();
@@ -43,7 +53,6 @@
 				}
 			}
 
-			IsRunning = false;
 			return pools;
 		}
 	}
